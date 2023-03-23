@@ -1,3 +1,5 @@
+[![Lint Build Test](https://github.com/flavio1110/large-csv-to-pgsql/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/flavio1110/large-csv-to-pgsql/actions/workflows/ci.yaml)
+
 ## Importing data to Postgres using pgx without loading in memory
 
 Example of importing data into the database without loading the entire file into memory.
