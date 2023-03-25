@@ -42,7 +42,7 @@ var peopleColumns = []string{
 func newPeopleCopyFromSource(csvStream io.Reader) *peopleCopyFromSource {
 	csvReader := csv.NewReader(csvStream)
 	csvReader.ReuseRecord = true // reuse slice to return the record line by line
-	csvReader.FieldsPerRecord = -1
+	csvReader.FieldsPerRecord = 3
 
 	return &peopleCopyFromSource{
 		reader: csvReader,

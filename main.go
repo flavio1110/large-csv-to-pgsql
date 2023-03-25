@@ -64,6 +64,7 @@ func importFile(imp importer, id string) {
 		log.Fatal("unable to open DB", err)
 	}
 	defer db.Close()
+	defer cleanupTable(db)
 
 	if err := imp(context.Background(), file, db); err != nil {
 		log.Fatal("failed to import data ", err)
@@ -71,15 +72,24 @@ func importFile(imp importer, id string) {
 
 }
 
+func cleanupTable(db *sql.DB) {
+	_, err := db.Exec("delete from people")
+	if err != nil {
+		log.Fatal("Failed to clean up table", err)
+	}
+}
+
 func profileMemory(id string) {
-	fmt.Printf("%s", id)
+	fmt.Printf("===> %s", id)
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 	// For info on each, see: https://golang.org/pkg/runtime/#MemStats
-	fmt.Printf("\tAlloc = %v MiB", bToMb(m.Alloc))
+	fmt.Printf("\n\tAlloc = %v MiB", bToMb(m.Alloc))
 	fmt.Printf("\tTotalAlloc = %v MiB", bToMb(m.TotalAlloc))
+	//fmt.Printf("\tFrees = %v MiB", bToMb(m.Frees))
 	fmt.Printf("\tSys = %v MiB", bToMb(m.Sys))
-	fmt.Printf("\tNumGC = %v\n", m.NumGC)
+	fmt.Printf("\tNumGC = %v", m.NumGC)
+	fmt.Printf("\tObjs = %v\n", m.Mallocs)
 }
 
 func bToMb(b uint64) uint64 {
