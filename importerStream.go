@@ -13,7 +13,7 @@ import (
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
-func importData(ctx context.Context, csvStream io.Reader, db *sql.DB) error {
+func importWithStream(ctx context.Context, csvStream io.Reader, db *sql.DB) error {
 	conn, err := db.Conn(ctx)
 	if err != nil {
 		return fmt.Errorf("failed to get Db connection fro sql.DB instance: %w", err)
