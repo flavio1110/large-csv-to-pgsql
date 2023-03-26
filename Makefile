@@ -1,6 +1,9 @@
 create-db:
 	docker-compose up -d
 
+delete-db:
+	docker compose down
+
 gen-file:
 	go run . gen
 
