@@ -10,9 +10,11 @@ import (
 	"runtime"
 )
 
+// Generate the file executing the following command `go run . gen`
 var fileName = "people.csv"
 
 // Connection string based on the DB created using the compose file
+// Start it by executiog the following command `docker compose up -d`
 var connString = "postgres://user:super-secret@localhost:5432/people?sslmode=disable"
 
 func main() {
@@ -25,9 +27,11 @@ func main() {
 	case "gen":
 		generateLargeFile()
 	case "import-stream":
-		importFile(importWithStream, "stream")
+		importFile(importWithStream)
+		defer profileMemory("stream")
 	case "import-read-all":
-		importFile(importReadAll, "read-all")
+		importFile(importReadAll)
+		defer profileMemory("read-all")
 	default:
 		log.Fatal("Provide the command: gen, import-stream, or import-read-all")
 	}
@@ -41,18 +45,21 @@ func generateLargeFile() {
 	defer f.Close()
 
 	// header
-	f.WriteString("first name,last name,city\n")
+	if _, err := f.WriteString("first name,last name,city\n"); err != nil {
+		log.Fatal("Failed to write header:", err.Error())
+	}
 
 	// 1M rows ~16MB
 	for i := 0; i < 1_000_000; i++ {
-		f.WriteString("John,Doe,New York\n")
+		if _, err := f.WriteString("John,Doe,New York\n"); err != nil {
+			log.Fatal("Failed to write header:", err.Error())
+		}
 	}
 }
 
 type importer func(ctx context.Context, csvStream io.Reader, db *sql.DB) error
 
-func importFile(imp importer, id string) {
-	defer profileMemory(id)
+func importFile(imp importer) {
 	file, err := os.Open(fileName)
 	if err != nil {
 		log.Fatal("unable to open file", err)

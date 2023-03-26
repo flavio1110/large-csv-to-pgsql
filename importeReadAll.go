@@ -63,6 +63,4 @@ func getRowsToBeInserted(csvStream io.Reader) ([][]interface{}, error) {
 		}
 		rows = append(rows, row)
 	}
-
-	return rows, nil
 }
