@@ -81,7 +81,8 @@ func (pfs *peopleCopyFromSource) Next() bool {
 	pfs.currentCsvRow, pfs.err = pfs.reader.Read()
 	if pfs.err != nil {
 
-		// when get to the end of the file return false and clean the error
+		// when get to the end of the file return false and clean the error.
+		// If it's io.EOF we can't return an error
 		if errors.Is(pfs.err, io.EOF) {
 			pfs.isEOF = true
 			pfs.err = nil

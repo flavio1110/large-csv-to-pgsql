@@ -8,10 +8,11 @@ Implementing the `CopyFromSource` of `pgx`.
 Comparing the memory consumption for each approach importing a file with ~16MB (1M rows).
 > You can read more about the meaning of each metric on <https://golang.org/pkg/runtime/#MemStats>.
 
-| Approach/Metric  | TotalAlloc         | Sys                | Objs              |
-|------------------|--------------------|--------------------|-------------------|
-| Stream file      | 61 MiB             | 12Mib              | 4002227           |
-| Read entire file | 299 MiB (+390.16%) | 187Mib (+1458.33%) | 7002300 (+74.96%) |
+| Approach/metric  |     |  TotalAlloc |     |          Sys |
+|------------------|-----|------------:|-----|-------------:|
+| Stream file      |     |      61 MiB |     |       12 Mib |
+| Read entire file |     |      84 MiB |     |       58 Mib |
+|                  |     | **+37.70%** |     | **+346.15%** |
 
 Run the tests yourself:
 

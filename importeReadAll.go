@@ -40,9 +40,12 @@ func getRowsToBeInserted(csvStream io.Reader) ([][]interface{}, error) {
 	csvReader := csv.NewReader(csvStream)
 	csvReader.ReuseRecord = true // reuse slice to return the record line by line
 	csvReader.FieldsPerRecord = -1
-
-	var rows [][]any
+	rows := make([][]any, 1_000_000)
+	// number of rows of the csv. If you don't know it beforehand
+	// it's worthy to iterate in the stream to count it so you can pre-allocate the space you need
 	isHeader := true
+	row := make([]any, len(peopleColumns))
+	count := 0
 	for {
 		r, err := csvReader.Read()
 		if err != nil {
@@ -57,10 +60,10 @@ func getRowsToBeInserted(csvStream io.Reader) ([][]interface{}, error) {
 			continue
 		}
 
-		var row []any
-		for _, column := range r {
-			row = append(row, column)
+		for i, column := range r {
+			row[i] = column
 		}
-		rows = append(rows, row)
+		rows[count] = row
+		count++
 	}
 }
